@@ -15,12 +15,8 @@
 // }
 // console.log(validPassword("Aman@82780"))
 
-const obj = {
-    name : "                             MAN                    ",
-    age:50
+let obj = {
+    $gt : "aman"
 }
 
-
-obj.name  = obj.name.trim()
-
-console.log(obj.name)
+console.log(obj)

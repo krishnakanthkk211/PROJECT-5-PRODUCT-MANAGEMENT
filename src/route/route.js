@@ -12,7 +12,7 @@ router.get("/user/:userId/profile", auth.authentication, userController.getUser)
 
 router.put("/user/:userId/profile", auth.authentication, auth.authorisation, userController.updateUser)
 
-
+router.post("/products", productController.createproduct)
 
 router.get("/products", productController.getProduct)
 
