@@ -2,18 +2,20 @@ const mongoose = require("mongoose")
 
 
 
-const ProduactSChema = mongoose.Model({
+const ProduactSChema = mongoose.Schema({
     title: { type: String, require: true, unique: true },
     description: { type: String, require: true },
+    price:{type:Number},
     currencyId: { type: String, require: true },
     currencyFormat: { type: String, require: true }, 
     isFreeShipping: { type: Boolean, default: false },
     productImage: { type: String, require: true },
     style: { type: String },
-    availableSizes: { enum: ["S", "XS", "M", "X", "L", "XXL", "XL"] },
-    installments: { Number },
-    deletedAt: { type: Date }
+    availableSizes: {type:["String"],enum: ["S", "XS", "M", "X", "L", "XXL", "XL"] },
+    installments: {type:Number },
+    deletedAt: { type: Date },   
+    isDeleted:{ type:Boolean, default:false}
+}, {timestamps:true})
 
-}, { timestamps: true })
 
 module.exports = mongoose.model("Products", ProduactSChema)
