@@ -9,8 +9,18 @@
 
 
 
-function validPassword(password) {
-    let regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,15}$/;
-    return regex.test(password);
+// function validPassword(password) {
+//     let regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,15}$/;
+//     return regex.test(password);
+// }
+// console.log(validPassword("Aman@82780"))
+
+const obj = {
+    name : "                             MAN                    ",
+    age:50
 }
-console.log(validPassword("Aman@82780"))
+
+
+obj.name  = obj.name.trim()
+
+console.log(obj.name)
