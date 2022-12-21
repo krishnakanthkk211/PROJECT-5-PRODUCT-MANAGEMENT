@@ -15,9 +15,5 @@
 // }
 // console.log(validPassword("Aman@82780"))
 
-let a = "fhguohf";
-
-let X = Number(a)
-let z = X==NaN
-console.log(z)
-console.log(typeof(X))
+let arr = []
+console.log(arr[0])

@@ -19,4 +19,4 @@ const ProduactSChema = mongoose.Schema({
 }, { timestamps: true })
 
 
-module.exports = mongoose.model("Products", ProduactSChema)
+module.exports = mongoose.model("Product", ProduactSChema)
