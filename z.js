@@ -15,8 +15,9 @@
 // }
 // console.log(validPassword("Aman@82780"))
 
-let obj = {
-    $gt : "aman"
-}
+let a = "fhguohf";
 
-console.log(obj)
+let X = Number(a)
+let z = X==NaN
+console.log(z)
+console.log(typeof(X))

@@ -139,11 +139,11 @@ const getUser = async (req, res) => {
 
     const user = await userModel.findOne({ _id: userId })
     if (!user) { return res.status(404).send({ status: false, message: "user not found" }) }
-    return res.status(200).send({ status: true, data: user })
+    return res.status(200).send({ status: true, message:"User profile details", data: user })
 
   }
   catch (err) {
-    return res.status(500).send({ status: false, message: err.message })
+    return res.status(500).send({ status: false,  message: err.message })
   }
 
 }
@@ -180,7 +180,7 @@ const updateUser = async (req, res) => {
     if (checkEmail) return res.status(400).send({ status: false, message: "Email already exist" });
 
     if (phone || phone == "") {
-      if (!validateEmail(phone)) return res.status(400).send({ status: false, message: "Enter a valid email-id" });
+      if (!isValidMobile(phone)) return res.status(400).send({ status: false, message: "Enter a valid email-id" });
     }
     let checkphone = await userModel.findOne({ phone: phone });
     if (checkphone) return res.status(400).send({ status: false, message: "Mobile number already exist" });

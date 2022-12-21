@@ -18,6 +18,9 @@ router.get("/products", productController.getProduct)
 
 router.get("/products/:productId", productController.getProductById)
 
+router.put("/products/:productId", productController.updateProduct)
+
+router.delete("/products/:productId", productController.deleteProduct)
 
 router.all("/**", (req, res)=>{
     res.status(400).send({status:false, message:"Route is wrong"})
