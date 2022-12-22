@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const userController = require("../controllers/userController")
 const productController = require("../controllers/productController")
+const cartController = require("../controllers/cartController")
 const auth = require("../middleware/auth")
 
 
@@ -32,7 +33,13 @@ router.delete("/products/:productId", productController.deleteProduct)
 //-------------------------User Controller APIs------------------------//
 
 
+router.post("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.createCart)
 
+router.get("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.getCart)
+
+router.put("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.updateCart)
+
+router.delete("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.deleteCart)
 
 router.all("/**", (req, res)=>{
     res.status(400).send({status:false, message:"Route is wrong"})
