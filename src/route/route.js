@@ -30,7 +30,7 @@ router.put("/products/:productId", productController.updateProduct)
 router.delete("/products/:productId", productController.deleteProduct)
 
 
-//-------------------------User Controller APIs------------------------//
+//-------------------------Cart Controller APIs------------------------//
 
 
 router.post("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.createCart)
@@ -40,6 +40,19 @@ router.get("/users/:userId/cart", auth.authentication, auth.authorisation, cartC
 router.put("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.updateCart)
 
 router.delete("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.deleteCart)
+
+
+
+//-------------------------Order Controller APIs------------------------//
+
+
+router.post("/users/:userId/orders", auth.authentication, auth.authorisation, cartController.createCart)
+
+
+router.put("/users/:userId/orders", auth.authentication, auth.authorisation, cartController.updateCart)
+
+
+//--------------------------------------------------------------------------//
 
 router.all("/**", (req, res)=>{
     res.status(400).send({status:false, message:"Route is wrong"})

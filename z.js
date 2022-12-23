@@ -17,10 +17,7 @@ let arr = [{
 
 let f ;
 arr.forEach(x=>{
-    if(x.name=="vishal"){
-      f = x
-      x.value -=10
-    }
+   delete x.value
 })
 
 console.log(f)
