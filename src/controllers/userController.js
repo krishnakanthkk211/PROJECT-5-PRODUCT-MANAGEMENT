@@ -157,8 +157,10 @@ const updateUser = async (req, res) => {
     let userProfile = req.userByUserId
 
     let data = req.body;
+    let files = req.files;
+
     let arrOfKeys = Object.keys(data)
-    if (arrOfKeys.length == 0) { return res.status(400).send({ status: false, msg: "Please enter your details !" }) }
+    if (arrOfKeys.length == 0 && !files) { return res.status(400).send({ status: false, msg: "Please enter your details !" }) }
 
     for(let i=0; i<1; i++){
       data[arrOfKeys[i]] = data[arrOfKeys[i]].trim()
