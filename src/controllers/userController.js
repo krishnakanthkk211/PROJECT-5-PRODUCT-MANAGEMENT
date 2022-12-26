@@ -11,13 +11,14 @@ const { isValidObjectId } = require("mongoose")
 
 
 const createUser = async (req, res) => {
+
   try {
     const data = req.body
     let files = req.files;
 
     let arrOfKeys = Object.keys(data)
-    if (arrOfKeys.length == 0) { return res.status(400).send({ status: false, msg: "Please enter your details" }) }
-    if (files.length == 0) { return res.status(400).send({ status: false, msg: "Please upload profileImage" }) }
+    if (arrOfKeys.length == 0) { return res.status(400).send({ status: false, message: "Please enter your details !" }) }
+    if (files.length == 0) { return res.status(400).send({ status: false, message: "Please upload profileImage !" }) }
 
     for(let i=0; i<arrOfKeys.length; i++){
       data[arrOfKeys[i]] = data[arrOfKeys[i]].trim()
@@ -25,55 +26,55 @@ const createUser = async (req, res) => {
  
     let { fname, lname, email, phone, password } = data
 
-    if (!fname) { return res.status(400).send({ status: false, msg: "Please enter fname" }) }
-    if (!isValidname(fname)) { return res.status(400).send({ status: false, msg: "Please enter valid fname" }) }
+    if (!fname) { return res.status(400).send({ status: false, message: "Please enter fname !" }) }
+    if (!isValidname(fname)) { return res.status(400).send({ status: false, message: "Please enter valid fname !" }) }
 
-    if (!lname) { return res.status(400).send({ status: false, msg: "Please enter lname" }) }
-    if (!isValidname(lname)) { return res.status(400).send({ status: false, msg: "Please enter valid lname" }) }
+    if (!lname) { return res.status(400).send({ status: false, message: "Please enter lname !" }) }
+    if (!isValidname(lname)) { return res.status(400).send({ status: false, message: "Please enter valid lname !" }) }
 
-    if (!email) { return res.status(400).send({ status: false, msg: "Please enter email" }) }
-    if (!validateEmail(email)) { return res.status(400).send({ status: false, msg: "Please enter valid email" }) }
+    if (!email) { return res.status(400).send({ status: false, message: "Please enter email !" }) }
+    if (!validateEmail(email)) { return res.status(400).send({ status: false, message: "Please enter valid email !" }) }
     let dataByEmail = await userModel.findOne({ email: email })
-    if (dataByEmail) { return res.send({ status: false, msg: "Account already created, Please login" }) }
+    if (dataByEmail) { return res.send({ status: false, message: "Email already exits !" }) }
 
     let profileImage = await uploadFile(files[0])
     data.profileImage = profileImage
 
-    if (!phone) { return res.status(400).send({ status: false, msg: "Please enter phone" }) }
-    if (!isValidMobile(phone)) { return res.status(400).send({ status: false, msg: "Please enter valid phone" }) }
+    if (!phone) { return res.status(400).send({ status: false, message: "Please enter phone !" }) }
+    if (!isValidMobile(phone)) { return res.status(400).send({ status: false, message: "Please enter valid phone !" }) }
     let dataByPhone = await userModel.findOne({ phone: phone })
-    if (dataByPhone) { return res.send({ status: false, msg: "Account already created, Please login" }) }
+    if (dataByPhone) { return res.status(400).send({ status: false, message: "Mobile Number already exits !" }) }
 
-    if (!password) { return res.status(400).send({ status: false, msg: "Please enter password" }) }
-    if (!validPassword(password)) { return res.status(400).send({ status: false, msg: "Please enter valid password" }) }
+    if (!password) { return res.status(400).send({ status: false, message: "Please enter password !" }) }
+    if (!validPassword(password)) { return res.status(400).send({ status: false, message: "Please enter valid password !" }) }
 
     const passwordHash = await bcrypt.hash(password, 5)
     data.password = passwordHash
 
-    if (!data.address) { return res.status(400).send({ status: false, msg: "Please enter address" }) }
+    if (!data.address) { return res.status(400).send({ status: false, message: "Please enter address !" }) }
     data.address = JSON.parse(data.address)
 
     if (data.address) {
 
       let { shipping, billing } = data.address
 
-      if (!shipping) { return res.status(400).send({ status: false, msg: "Please enter shipping address" }) }
-      if (!billing) { return res.status(400).send({ status: false, msg: "Please enter billing address" }) }
+      if (!shipping) { return res.status(400).send({ status: false, message: "Please enter shipping address !" }) }
+      if (!billing) { return res.status(400).send({ status: false, message: "Please enter billing address !" }) }
 
       if (shipping) {
         let { street, city, pincode } = shipping
         
-        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, msg: "Please enter fname1" }) }
-        if (!city || typeof(city)!="string") { return res.status(400).send({ status: false, msg: "Please enter fname6" }) }
-        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, msg: "Please enter pincode & should be valid !" }) }
+        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "street is mandatory !" }) }
+        if (!city || typeof(city)!="string") { return res.status(400).send({ status: false, message: "city is mandatory !" }) }
+        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter pincode & should be valid !" }) }
       }
 
       if (billing) {
         let { street, city, pincode } = billing
 
-        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, msg: "Please enter fname0" }) }
-        if (!city || typeof(city)!="string"){ return res.status(400).send({ status: false, msg: "Please enter fname5" }) }
-        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, msg: "Please enter pincode & should be valid !" }) }
+        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "Please enter fname0" }) }
+        if (!city || typeof(city)!="string"){ return res.status(400).send({ status: false, message: "Please enter fname5" }) }
+        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter pincode & should be valid !" }) }
       }
     }
 
@@ -82,7 +83,7 @@ const createUser = async (req, res) => {
     res.status(201).send({ status: true, data: result })
 
   } catch (err) {
-    res.status(500).send({ status: false, msg: err.message })
+    res.status(500).send({ status: false, message: err.message })
   }
 }
 

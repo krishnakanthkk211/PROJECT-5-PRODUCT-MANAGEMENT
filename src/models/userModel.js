@@ -1,11 +1,11 @@
 const mongoose = require("mongoose")
 
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     fname: {type:String , require:true},
     lname: {type:String , require:true},
-    email: {type:String , require:true},
+    email: {type:String , require:true, unique:true},
     profileImage: {type:String , require:true}, 
-    phone: {type:String , require:true },
+    phone: {type:String , require:true, unique:true},
     password: {type:String , require:true},
     address:{    
         shipping:{
@@ -18,8 +18,7 @@ const UserSchema = mongoose.Schema({
             city:{type:String,trim:true},
             pincode:{type:Number ,  require:true, trim:true}
         } 
-    },
-    billing:{type:Object}
+    }
 },{timestamps:true})
 
 
