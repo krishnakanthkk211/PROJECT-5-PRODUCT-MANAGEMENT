@@ -92,12 +92,12 @@ const getProduct = async (req, res) => {
         }
         if (data.name) { options.title = { $regex: data.name, $options: "i" } }
 
-        if (data.priceGretherThen || data.priceLessThan) {
+        if (data.priceGreaterThan || data.priceLessThan) {
 
-            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceLessThan) || !/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGretherThen)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
+            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceLessThan) || !/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
 
-            if (data.priceGretherThen && data.priceLessThan) { options.price = { $gt: data.priceGretherThen, $lt: data.priceLessThan } }
-            else if (data.priceGretherThen) { options.price = { $gt: data.priceGretherThen } }
+            if (data.priceGreaterThan && data.priceLessThan) { options.price = { $gt: data.priceGreaterThan, $lt: data.priceLessThan } }
+            else if (data.priceGreaterThan) { options.price = { $gt: data.priceGreaterThan } }
             else { options.price = { $lt: data.priceLessThan } }
         }
 

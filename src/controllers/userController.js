@@ -20,10 +20,10 @@ const createUser = async (req, res) => {
     if (arrOfKeys.length == 0) { return res.status(400).send({ status: false, message: "Please enter your details !" }) }
     if (files.length == 0) { return res.status(400).send({ status: false, message: "Please upload profileImage !" }) }
 
-    for(let i=0; i<arrOfKeys.length; i++){
+    for (let i = 0; i < arrOfKeys.length; i++) {
       data[arrOfKeys[i]] = data[arrOfKeys[i]].trim()
-    }         
- 
+    }
+
     let { fname, lname, email, phone, password } = data
 
     if (!fname) { return res.status(400).send({ status: false, message: "Please enter fname !" }) }
@@ -63,24 +63,24 @@ const createUser = async (req, res) => {
 
       if (shipping) {
         let { street, city, pincode } = shipping
-        
-        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "shipping street is mandatory & valid !" }) }
-        if (!city || typeof(city)!="string") { return res.status(400).send({ status: false, message: "shipping city is mandatory & valid !" }) }
+
+        if (!street || typeof (street) != "string") { return res.status(400).send({ status: false, message: "shipping street is mandatory & valid !" }) }
+        if (!city || typeof (city) != "string") { return res.status(400).send({ status: false, message: "shipping city is mandatory & valid !" }) }
         if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter shipping pincode & should be valid !" }) }
       }
 
       if (billing) {
         let { street, city, pincode } = billing
 
-        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "billing street is mandatory & valid !" }) }
-        if (!city || typeof(city)!="string"){ return res.status(400).send({ status: false, message: "billing city is mandatory & valid !" }) }
+        if (!street || typeof (street) != "string") { return res.status(400).send({ status: false, message: "billing street is mandatory & valid !" }) }
+        if (!city || typeof (city) != "string") { return res.status(400).send({ status: false, message: "billing city is mandatory & valid !" }) }
         if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter billing pincode & should be valid !" }) }
       }
     }
 
     const result = await userModel.create(data)
 
-    res.status(201).send({ status: true, message:"User created successfully", data: result })
+    res.status(201).send({ status: true, message: "User created successfully", data: result })
 
   } catch (err) {
     res.status(500).send({ status: false, message: err.message })
@@ -140,11 +140,11 @@ const getUser = async (req, res) => {
 
     const user = await userModel.findOne({ _id: userId })
     if (!user) { return res.status(404).send({ status: false, message: "user not found" }) }
-    return res.status(200).send({ status: true, message:"User profile details", data: user })
+    return res.status(200).send({ status: true, message: "User profile details", data: user })
 
   }
   catch (err) {
-    return res.status(500).send({ status: false,  message: err.message })
+    return res.status(500).send({ status: false, message: err.message })
   }
 
 }
@@ -162,8 +162,10 @@ const updateUser = async (req, res) => {
     let arrOfKeys = Object.keys(data)
     if (arrOfKeys.length == 0 && !files) { return res.status(400).send({ status: false, msg: "Please enter your details !" }) }
 
-    for(let i=0; i<1; i++){
-      data[arrOfKeys[i]] = data[arrOfKeys[i]].trim()
+    if (arrOfKeys.length > 0) {
+      for (let i = 0; i < 1; i++) {
+        data[arrOfKeys[i]] = data[arrOfKeys[i]].trim()
+      }
     }
 
     let { fname, lname, email, phone, password } = data
@@ -194,8 +196,10 @@ const updateUser = async (req, res) => {
       data.password = passwordHash
     }
 
+    if (data.address || data.address=="") {
 
-    if (data.address) {
+      if(data.address==""){return res.status(400).send({status:false, message:"Address can't be empty !"})}
+      
       let tempAddress = userProfile.address
       let { shipping, billing } = data.address
 
@@ -229,7 +233,7 @@ const updateUser = async (req, res) => {
     }
 
     let updateUser = await userModel.findOneAndUpdate({ _id: userProfile._id }, data, { new: true })
-    res.status(200).send({ status:true, message:"User profile updated", data:updateUser });
+    res.status(200).send({ status: true, message: "User profile updated", data: updateUser });
 
   } catch (err) {
     res.status(500).send({ status: false, error: err.message })
