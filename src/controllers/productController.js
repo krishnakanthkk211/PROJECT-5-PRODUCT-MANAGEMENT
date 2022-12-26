@@ -93,7 +93,6 @@ const getProduct = async (req, res) => {
         if (data.name) { options.title = { $regex: data.name, $options: "i" } }
 
         if (data.priceGreaterThan && data.priceLessThan) {
-
             if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceLessThan) && !/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
             options.price = { $gt: data.priceGreaterThan, $lt: data.priceLessThan }
 
@@ -101,8 +100,8 @@ const getProduct = async (req, res) => {
             if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
             options.price = { $gt: data.priceGreaterThan }
 
-        } else {
-            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
+        } else if(data.priceLessThan) {
+            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceLessThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
             options.price = { $lt: data.priceLessThan }
         }
 
@@ -115,7 +114,7 @@ const getProduct = async (req, res) => {
         let result = await productModel.find(options).sort(sortObj)
         if (result.length == 0) { return res.status(404).send({ status: false, message: "No product found !" }) }
 
-        return res.status(200).send({ status: true, message: "Success", count: result.length, data: result })
+        return res.status(200).send({ status: true, message: "Success", data: result })
 
     } catch (err) {
         return res.status(500).send(err.message)
@@ -166,16 +165,20 @@ const updateProduct = async (req, res) => {
             data[arrOfKeys[i]] = data[arrOfKeys[i]].trim()
         }
 
-        let { title, price, currencyId, currencyFormat, isFreeShipping, availableSizes, installments } = data
+        let {description, title, price, currencyId, currencyFormat, isFreeShipping, availableSizes, installments } = data
+
+        if(description || description==""){
+            if(description==""||typeof(description)!="string"){ return res.status(400).send({ status: false, message: "Enter valid description !" }) }
+        }
 
         if (title || title == "") {
-            if (typeof (title) != "string") { return res.status(400).send({ status: false, message: "Enter valid title !" }) }
+            if (title == ""||typeof (title) != "string") { return res.status(400).send({ status: false, message: "Enter valid title !" }) }
             let unoqeTitle = await productModel.findOne({ title: title })
             if (unoqeTitle) { return res.status(400).send({ status: false, message: "Enter Unique Title !" }) }
         }
 
         if (price || price == "") {
-            if (!/^\d{0,8}[.]?\d{1,4}$/.test(price)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
+            if (!/^\d{0,8}[.]?\d{1,4}$/.test(price)||price == "") { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
         }
 
         if (currencyId || currencyId == "") {
@@ -207,7 +210,7 @@ const updateProduct = async (req, res) => {
         }
 
         if (installments || installments == "") {
-            if (!/^\d{0,8}[.]?\d{1,4}$/.test(installments)) { return res.status(400).send({ status: false, message: "Please enter valid installments !" }) }
+            if (!/^\d{0,8}[.]?\d{1,4}$/.test(installments)|| installments == "") { return res.status(400).send({ status: false, message: "Please enter valid installments !" }) }
         }
         //return console.log(files)
 

@@ -74,7 +74,7 @@ const getCart = async (req, res) => {
     try {
         let user = req.userByUserId
 
-        let cart = await cartModel.findOne({ userId: user._id }).populate({ path: "items.productId", match: { isDeleted: false }, select: { title: 1, price: 1, productImage: 1 } })
+        let cart = await cartModel.findOne({ userId: user._id }).populate({ path: "items.productId", select: { title: 1, price: 1, productImage: 1 } }).lean()
         if (!cart || cart.items.length == 0) { return res.status(404).send({ status: false, message: "Cart does not Exits !" }) }
 
         cart.items.forEach(x => delete x._id)
