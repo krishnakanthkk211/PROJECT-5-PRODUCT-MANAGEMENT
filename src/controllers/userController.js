@@ -64,23 +64,23 @@ const createUser = async (req, res) => {
       if (shipping) {
         let { street, city, pincode } = shipping
         
-        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "street is mandatory !" }) }
-        if (!city || typeof(city)!="string") { return res.status(400).send({ status: false, message: "city is mandatory !" }) }
-        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter pincode & should be valid !" }) }
+        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "shipping street is mandatory & valid !" }) }
+        if (!city || typeof(city)!="string") { return res.status(400).send({ status: false, message: "shipping city is mandatory & valid !" }) }
+        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter shipping pincode & should be valid !" }) }
       }
 
       if (billing) {
         let { street, city, pincode } = billing
 
-        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "Please enter fname0" }) }
-        if (!city || typeof(city)!="string"){ return res.status(400).send({ status: false, message: "Please enter fname5" }) }
-        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter pincode & should be valid !" }) }
+        if (!street || typeof(street)!="string") { return res.status(400).send({ status: false, message: "billing street is mandatory & valid !" }) }
+        if (!city || typeof(city)!="string"){ return res.status(400).send({ status: false, message: "billing city is mandatory & valid !" }) }
+        if (!pincode || typeof (pincode) != "number" || !/^[0-9]{6}$/.test(pincode)) { return res.status(400).send({ status: false, message: "Please enter billing pincode & should be valid !" }) }
       }
     }
 
     const result = await userModel.create(data)
 
-    res.status(201).send({ status: true, data: result })
+    res.status(201).send({ status: true, message:"User created successfully", data: result })
 
   } catch (err) {
     res.status(500).send({ status: false, message: err.message })
@@ -221,14 +221,13 @@ const updateUser = async (req, res) => {
       data.address = tempAddress;
     }
 
-    let files = req.files;
     if (files && files.length > 0) {
       let profileImgUrl = await uploadFile(files[0]);
       data.profileImage = profileImgUrl;
     }
 
     let updateUser = await userModel.findOneAndUpdate({ _id: userProfile._id }, data, { new: true })
-    res.status(200).send({ status: true, message: "User profile updated", data: updateUser });
+    res.status(200).send({ status:true, message:"User profile updated", data:updateUser });
 
   } catch (err) {
     res.status(500).send({ status: false, error: err.message })
