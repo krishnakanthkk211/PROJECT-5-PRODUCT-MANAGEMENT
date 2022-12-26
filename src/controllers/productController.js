@@ -36,14 +36,14 @@ const createproduct = async (req, res) => {
         if (!currencyFormat) { return res.status(400).send({ status: false, message: "Enter Currency Format !" }) }
         if (currencyFormat != "₹") { return res.status(400).send({ status: false, message: "Invalid currency Format !" }) }
 
-        if(isFreeShipping){
+        if (isFreeShipping) {
             if (!(isFreeShipping == "true" || isFreeShipping == "false")) {
                 { return res.status(400).send({ status: false, message: "Enter valid isShipping value [true/false] !" }) }
             }
-        }else{
+        } else {
             data.isFreeShipping = false
         }
-        
+
         if (files.length == 0) { return res.status(400).send({ status: false, message: "Please upload productImage !" }) }
 
         let productImage = await uploadFile(files[0])
@@ -92,13 +92,18 @@ const getProduct = async (req, res) => {
         }
         if (data.name) { options.title = { $regex: data.name, $options: "i" } }
 
-        if (data.priceGreaterThan || data.priceLessThan) {
+        if (data.priceGreaterThan && data.priceLessThan) {
 
-            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceLessThan) || !/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
+            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceLessThan) && !/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
+            options.price = { $gt: data.priceGreaterThan, $lt: data.priceLessThan }
 
-            if (data.priceGreaterThan && data.priceLessThan) { options.price = { $gt: data.priceGreaterThan, $lt: data.priceLessThan } }
-            else if (data.priceGreaterThan) { options.price = { $gt: data.priceGreaterThan } }
-            else { options.price = { $lt: data.priceLessThan } }
+        } else if (data.priceGreaterThan) {
+            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
+            options.price = { $gt: data.priceGreaterThan }
+
+        } else {
+            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceGreaterThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
+            options.price = { $lt: data.priceLessThan }
         }
 
         let sortObj = {}
@@ -161,7 +166,7 @@ const updateProduct = async (req, res) => {
             data[arrOfKeys[i]] = data[arrOfKeys[i]].trim()
         }
 
-        let { title, price, currencyId, currencyFormat,isFreeShipping, availableSizes, installments } = data
+        let { title, price, currencyId, currencyFormat, isFreeShipping, availableSizes, installments } = data
 
         if (title || title == "") {
             if (typeof (title) != "string") { return res.status(400).send({ status: false, message: "Enter valid title !" }) }
@@ -181,13 +186,13 @@ const updateProduct = async (req, res) => {
             if (currencyFormat != "₹") { return res.status(400).send({ status: false, message: "Invalid currency Format !" }) }
         }
 
-        if(isFreeShipping || isFreeShipping == ""){
+        if (isFreeShipping || isFreeShipping == "") {
             if (!(isFreeShipping == "true" || isFreeShipping == "false")) {
                 { return res.status(400).send({ status: false, message: "Enter valid isShipping value [true/false] !" }) }
             }
         }
 
-        if (availableSizes||availableSizes=="") {
+        if (availableSizes || availableSizes == "") {
             data.availableSizes = data.availableSizes.split(",")
             availableSizes = data.availableSizes
 
@@ -204,19 +209,19 @@ const updateProduct = async (req, res) => {
         if (installments || installments == "") {
             if (!/^\d{0,8}[.]?\d{1,4}$/.test(installments)) { return res.status(400).send({ status: false, message: "Please enter valid installments !" }) }
         }
-//return console.log(files)
-        
+        //return console.log(files)
+
         if (files && files.length > 0) {
             let profileImgUrl = await uploadFile(files[0]);
-            if(profileImgUrl.length==0){return res.send("jdfad;jfoau;fn")}
+            if (profileImgUrl.length == 0) { return res.send("jdfad;jfoau;fn") }
             data.productImage = profileImgUrl;
-        }  
-        
-        
-        
-        
-        
-       
+        }
+
+
+
+
+
+
 
         let updateProduct = await productModel.findOneAndUpdate({ _id: productId }, data, { new: true })
 
