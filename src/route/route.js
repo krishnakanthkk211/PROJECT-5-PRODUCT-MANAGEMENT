@@ -7,50 +7,51 @@ const cartController = require("../controllers/cartController")
 const auth = require("../middleware/auth")
 
 
+
 //------------------------- User Controller APIs ------------------------//
 
-router.post("/register", userController.createUser)
+router.post("/register", userController.createUser) //korvi 
 
-router.post("/login", userController.loginUser)
+router.post("/login", userController.loginUser)      //Shivam
 
-router.get("/user/:userId/profile", auth.authentication, auth.authorisation, userController.getUser)
+router.get("/user/:userId/profile", auth.authentication, auth.authorisation, userController.getUser)   //Aman
 
-router.put("/user/:userId/profile", auth.authentication, auth.authorisation, userController.updateUser)
+router.put("/user/:userId/profile", auth.authentication, auth.authorisation, userController.updateUser)  //Vishal
 
 
 //------------------------- Product Controller APIs ------------------------//
 
-router.post("/products", productController.createproduct)
+router.post("/products", productController.createproduct)    //Korvi
 
-router.get("/products", productController.getProduct)
+router.get("/products", productController.getProduct)          //Aman
 
-router.get("/products/:productId", productController.getProductById)
+router.get("/products/:productId", productController.getProductById)      //vishal
 
-router.put("/products/:productId", productController.updateProduct)
+router.put("/products/:productId", productController.updateProduct)    //Shivam
 
-router.delete("/products/:productId", productController.deleteProduct)
+router.delete("/products/:productId", productController.deleteProduct)    //Aman
 
 
 //-------------------------Cart Controller APIs------------------------//
 
 
-router.post("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.createCart)
+router.post("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.createCart)  //vishal
 
-router.get("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.getCart)
+router.get("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.getCart)      //korvi
 
-router.put("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.updateCart)
+router.put("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.updateCart)   //aman
 
-router.delete("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.deleteCart)
+router.delete("/users/:userId/cart", auth.authentication, auth.authorisation, cartController.deleteCart)   //shivam
 
 
 
 //-------------------------Order Controller APIs------------------------//
 
 
-router.post("/users/:userId/orders", auth.authentication, auth.authorisation, orderController.createOrder)
+router.post("/users/:userId/orders", auth.authentication, auth.authorisation, orderController.createOrder) //Vishal
 
 
-router.put("/users/:userId/orders", auth.authentication, auth.authorisation, orderController.updateOrder)
+router.put("/users/:userId/orders", auth.authentication, auth.authorisation, orderController.updateOrder)  //Korvi
 
 
 //--------------------------------------------------------------------------//
