@@ -1,14 +1,15 @@
 const userModel = require("../models/userModel")
+const { isValidObjectId } = require("mongoose")
 const { uploadFile } = require("../aws/aws")
-const { isValidMobile, isValidname, validPassword, validateEmail } = require("../validations/validation")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const { isValidObjectId } = require("mongoose")
+const { isValidMobile, isValidname, validPassword, validateEmail } = require("../validations/validation")
 
 
 
 
 
+//------------------- User Resister API ----------------------//
 
 const createUser = async (req, res) => {
 
@@ -90,6 +91,7 @@ const createUser = async (req, res) => {
 
 
 
+//------------------- User Login API ----------------------//
 
 const loginUser = async (req, res) => {
 
@@ -111,16 +113,17 @@ const loginUser = async (req, res) => {
       if (!isValidMobile(phone)) { return res.status(400).send({ status: false, message: "Please Enter Valid Phone Number" }) }
     }
 
-    if (!validPassword(password)) { return res.status(400).send({ status: false, message: "Please enter valid password" }) }
-
     let userExist = await userModel.findOne({ $or: [{ email: email }, { phone: phone }] })
 
     if (!userExist) { return res.status(404).send({ status: false, message: "User doesn't exists !" }) }
 
+    if (!validPassword(password)) { return res.status(400).send({ status: false, message: "Please enter valid password" }) }
+
     let checkPass = await bcrypt.compare(password, userExist.password)
+    
     if (!checkPass) { return res.status(400).send({ status: false, message: "Please enter correct password" }) }
 
-    let token = jwt.sign({ userId: userExist._id, email: userExist.email, phone: userExist.phone }, "shopping", { expiresIn: "20h" })
+    let token = jwt.sign({ userId: userExist._id, email: userExist.email, phone: userExist.phone }, "shopping", { expiresIn: "96h" })
 
     return res.status(200).send({ status: true, message: "User login successfull", data: { userId: userExist._id, token: token } })
 
@@ -132,6 +135,8 @@ const loginUser = async (req, res) => {
 
 
 
+
+//------------------- Get User API ----------------------//
 
 const getUser = async (req, res) => {
   try {
@@ -151,6 +156,8 @@ const getUser = async (req, res) => {
 
 
 
+
+//------------------- Update User API ----------------------//
 
 const updateUser = async (req, res) => {
   try {
@@ -239,5 +246,8 @@ const updateUser = async (req, res) => {
     res.status(500).send({ status: false, error: err.message })
   }
 }
+
+
+
 
 module.exports = { createUser, loginUser, getUser, updateUser }

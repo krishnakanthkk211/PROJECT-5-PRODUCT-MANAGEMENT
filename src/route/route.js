@@ -13,7 +13,7 @@ router.post("/register", userController.createUser)
 
 router.post("/login", userController.loginUser)
 
-router.get("/user/:userId/profile", auth.authentication, userController.getUser)
+router.get("/user/:userId/profile", auth.authentication, auth.authorisation, userController.getUser)
 
 router.put("/user/:userId/profile", auth.authentication, auth.authorisation, userController.updateUser)
 

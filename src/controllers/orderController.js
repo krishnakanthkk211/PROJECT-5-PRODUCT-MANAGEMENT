@@ -28,20 +28,17 @@ const createOrder = async (req, res) => {
         })
         data.totalQuantity = totalQuantity;
        
-        if(cancellable){
+        if(cancellable || cancellable==false){
             if(typeof(cancellable)!="boolean"){ return res.status(400).send({ status: false, message: "Please enter valid cancellable value (true/false) !" }) }
+            data.cancellable = cancellable
         }else{
             data.cancellable = true
         }
 
-        if(status){
-            if(status != "pending"){return res.status(400).send({status:false, message:"Status must be only \'pending\'"})}
-        }else{
-            data.status = "pending"
-        }
-
+        data.status = "pending"
+        
         let result = await orderModel.create(data)
-       
+      
         let updatedData = { userId: userId, items: [], totalPrice: 0, totalItems: 0 }
         await cartModel.updateOne({ userId: userId}, updatedData )
 
@@ -57,21 +54,22 @@ const createOrder = async (req, res) => {
 const updateOrder = async (req, res) => {
     try {
         let userId = req.userByUserId._id;
-        let orderId = req.body.orderId
-        if (!orderId) { return res.status(400).send({ status: false, message: "OrderId is mandatory !" }) }
-        if(!isValidObjectId(orderId)){ return res.status(400).send({ status: false, message: "Enter a valid OrderId !" }) }
         
-        let order = await orderModel.findOne({ userId: userId })
+        let orderId = req.body.orderId;
+        if(!orderId){ return res.status(400).send({ status: false, message: "OrderId is mendatory !" }) }
+        if(!isValidObjectId(orderId)){ return res.status(400).send({ status: false, message: "Enter a valid OrderId  !" })}
+
+        let order = await orderModel.findOne({ _id: orderId })
         if (!order) { return res.status(404).send({ status: false, message: "No such Order found !" }) }
-        if (!order.cancellable) { return res.status(404).send({ status: false, message: "Your Order is not Cancellable !" }) }
+        if (!order.cancellable) { return res.status(400).send({ status: false, message: "Your Order is not Cancellable !" }) }
        
         if(order.status == "cancled"){ return res.status(400).send({ status: false, message: "Your order already cancelled" }); }
         if(order.status == "completed"){ return res.status(400).send({ status: false, message: "Your order already completed" }); }
         
         let status = req.body.status;
-        if(!status){ return res.status(404).send({ status: false, message: "Status is mendatory !" }) }
+        if(!status){ return res.status(400).send({ status: false, message: "Status is mendatory !" }) }
 
-        let enums = orderModel.schema.obj.status.enum
+        let enums = ["cancled","completed"]
         if(!enums.includes(status)) { return res.status(400).send({ status: false, message: "Please enter valid status [pending, cancled, completed] !" }) }
 
         let result = await orderModel.findOneAndUpdate({ userId: userId }, { $set: { status: status } }, { new: true })

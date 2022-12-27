@@ -212,19 +212,12 @@ const updateProduct = async (req, res) => {
         if (installments || installments == "") {
             if (!/^\d{0,8}[.]?\d{1,4}$/.test(installments)|| installments == "") { return res.status(400).send({ status: false, message: "Please enter valid installments !" }) }
         }
-        //return console.log(files)
 
         if (files && files.length > 0) {
             let profileImgUrl = await uploadFile(files[0]);
             if (profileImgUrl.length == 0) { return res.send("jdfad;jfoau;fn") }
             data.productImage = profileImgUrl;
         }
-
-
-
-
-
-
 
         let updateProduct = await productModel.findOneAndUpdate({ _id: productId }, data, { new: true })
 
