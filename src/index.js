@@ -8,7 +8,7 @@ app.use(express.json())
 app.use(multer().any())
 
 
-mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', true)
 
 mongoose.connect("mongodb+srv://amanprajapat82780:Lucky82780@newproject.3qdy8y3.mongodb.net/group15Database?retryWrites=true&w=majority",{
     useNewUrlParser:true

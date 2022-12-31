@@ -15,12 +15,7 @@ function isValidMobile(phone){
 
 function isValidname(firstname){
     let result = (typeof(firstname) == "string" && /^[a-zA-Z]+$/.test(firstname.trim()))?true:false
-    // if(result){
-    //     firstname = firstname.trim()
-    //     return firstname.replace(firstname[0], firstname[0].toUpperCase())
-    // }else{
-    //     return false
-    // }
+   
     return result
 }
 

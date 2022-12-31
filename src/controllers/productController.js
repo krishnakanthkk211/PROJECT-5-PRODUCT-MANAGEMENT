@@ -22,8 +22,8 @@ const createproduct = async (req, res) => {
         let { title, description, price, currencyId, currencyFormat, isFreeShipping, style, availableSizes, installments } = data
 
         if (!title || typeof (title) != "string") { return res.status(400).send({ status: false, message: "Enter Title !" }) }
-        let unoqeTitle = await productModel.findOne({ title: title })
-        if (unoqeTitle) { return res.status(400).send({ status: false, message: "Enter Unique Title !" }) }
+        let uniqueTitle = await productModel.findOne({ title: title })
+        if (uniqueTitle) { return res.status(400).send({ status: false, message: "Enter Unique Title !" }) }
 
         if (!description) { return res.status(400).send({ status: false, message: "Enter description !" }) }
 
@@ -60,12 +60,12 @@ const createproduct = async (req, res) => {
         for (let i = 0; i < availableSizes.length; i++) {
             let yesNo = (enums.includes(availableSizes[i].trim())) ? true : false
             if (!yesNo) { return res.status(400).send({ status: false, message: "Please enter valid size !" }) }
-            else { newSizes.push(availableSizes[i].trim()) }
+            else { newSizes.push(availableSizes[i!=i+1].trim()) }
         }
         data.availableSizes = newSizes
 
         if (!/^\d+(\.\d{2})?$/.test(installments)) { return res.status(400).send({ status: false, message: "Please enter valid installments !" }) }
-
+                                          
         const result = await productModel.create(data)
         res.status(201).send({ status: true, message: "Success", data: result })
 
@@ -104,7 +104,7 @@ const getProduct = async (req, res) => {
             if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(data.priceLessThan)) { return res.status(400).send({ status: false, message: "Enter Valid Price !" }) }
             options.price = { $lt: data.priceLessThan }
         }
-
+                                        
         let sortObj = {}
         if (data.priceSort) {
             if (data.priceSort == 1 || data.priceSort == -1) { sortObj.price = data.priceSort }
@@ -129,12 +129,12 @@ const getProduct = async (req, res) => {
 const getProductById = async (req, res) => {
     try {
         let productId = req.params.productId
-
+    
         if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: 'Invalid ProductId !' })
-
-        let product = await productModel.findById({ _id: productId, isDeleted: false })
+    
+        let product = await productModel.findOne({ _id: productId, isDeleted: false })
         if (!product) return res.status(404).send({ status: false, message: "Product not found !" })
-
+    
         return res.status(200).send({ status: true, message: "Success", data: product })
 
     } catch (err) {
@@ -204,6 +204,7 @@ const updateProduct = async (req, res) => {
             for (let i = 0; i < availableSizes.length; i++) {
                 let yesNo = (enums.includes(availableSizes[i].trim())) ? true : false
                 if (!yesNo) { return res.status(400).send({ status: false, message: "Please enter valid size !" }) }
+                if(yesNo){}
                 else { newSizes.push(availableSizes[i].trim()) }
             }
             data.availableSizes = newSizes
@@ -215,7 +216,7 @@ const updateProduct = async (req, res) => {
 
         if (files && files.length > 0) {
             let profileImgUrl = await uploadFile(files[0]);
-            if (profileImgUrl.length == 0) { return res.send("jdfad;jfoau;fn") }
+            
             data.productImage = profileImgUrl;
         }
 
@@ -240,7 +241,7 @@ const deleteProduct = async (req, res) => {
         let productId = req.params.productId
 
         if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: " Invalid ProductId !" })
-        let product = await productModel.findById({ _id: productId })
+        let product = await productModel.findOne({ _id: productId })
         if (!product) return res.status(404).send({ status: false, message: "Product not found !" })
         if (product.isDeleted) { return res.status(400).send({ status: false, message: "Product alredy deleted !" }) }
 
